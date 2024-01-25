@@ -1,7 +1,10 @@
 # Use the official Ubuntu image as the base image
 FROM ubuntu:latest
 
-# Update and install dependencies
+# Set environment variables to non-interactive (to avoid prompts during installation)
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update and install system dependencies
 RUN apt-get update -y && apt-get upgrade -y
 RUN apt-get install -y \
     curl \
@@ -11,9 +14,17 @@ RUN apt-get install -y \
     libreadline-dev \
     zlib1g-dev \
     libsqlite3-dev \
-    nodejs \
-    npm \
-    postgresql-client
+    git \
+    vim
+
+# Install Node.js and npm
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get install -y nodejs
+
+# Install Yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && apt-get install -y yarn
 
 # Install Ruby using RVM (Ruby Version Manager)
 RUN curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
@@ -25,25 +36,12 @@ RUN /bin/bash -l -c "rvm use 3.0.0 --default"
 # Install Rails
 RUN /bin/bash -l -c "gem install rails"
 
-# Install Yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y yarn
-
-# Install Playwright and its dependencies
-RUN npx playwright install
-
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the application files to the container
-COPY . /app
+# Expose ports for Rails and Storybook
+EXPOSE 3000  # Rails server
+EXPOSE 6006  # Storybook
 
-# Install app dependencies
-RUN yarn install
-
-# Expose the port the app runs on
-EXPOSE 3000
-
-# Start Rails server
+# Start Rails server (modify CMD as needed for your project)
 CMD ["rails", "server", "-b", "0.0.0.0"]
