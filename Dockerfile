@@ -3,7 +3,7 @@ FROM ubuntu:latest
 
 # Install zsh, nano, and other development tools
 RUN apt-get update && \
-    apt-get install -y curl zsh git fonts-powerline nano && \
+    apt-get install -y curl fonts-powerline git make nano zsh && \
     rm -rf /var/lib/apt/lists/*
 
 # Disable IPv6
