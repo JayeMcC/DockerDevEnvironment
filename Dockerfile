@@ -1,47 +1,37 @@
 # Use the official Ubuntu image as the base image
 FROM ubuntu:latest
 
-# Set environment variables to non-interactive (to avoid prompts during installation)
-ENV DEBIAN_FRONTEND=noninteractive
+# Install zsh, nano, and other development tools
+RUN apt-get update && \
+    apt-get install -y curl zsh git fonts-powerline nano && \
+    rm -rf /var/lib/apt/lists/*
 
-# Update and install system dependencies
-RUN apt-get update -y && apt-get upgrade -y
-RUN apt-get install -y \
-    curl \
-    gnupg2 \
-    build-essential \
-    libssl-dev \
-    libreadline-dev \
-    zlib1g-dev \
-    libsqlite3-dev \
-    git \
-    vim
+# Disable IPv6
+RUN echo 'net.ipv6.conf.all.disable_ipv6 = 1' >> /etc/sysctl.conf && \
+    echo 'net.ipv6.conf.default.disable_ipv6 = 1' >> /etc/sysctl.conf && \
+    echo 'net.ipv6.conf.lo.disable_ipv6 = 1' >> /etc/sysctl.conf && \
+    sysctl -p
 
-# Install Node.js and npm
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-RUN apt-get install -y nodejs
+# Increase the maximum number of inotify watchers
+RUN echo fs.inotify.max_user_watches=524288 | tee -a /etc/sysctl.conf && \
+    sysctl -p
 
-# Install Yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y yarn
+# Enable mouse support in nano
+RUN echo "set mouse" >> /etc/nanorc
 
-# Install Ruby using RVM (Ruby Version Manager)
-RUN curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
-RUN curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
-RUN curl -sSL https://get.rvm.io | bash -s stable
-RUN /bin/bash -l -c "rvm install 3.0.0"
-RUN /bin/bash -l -c "rvm use 3.0.0 --default"
+# Install Oh My Zsh and Powerlevel10k
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k && \
+    sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="powerlevel10k\/powerlevel10k"/g' ~/.zshrc
 
-# Install Rails
-RUN /bin/bash -l -c "gem install rails"
+# Set zsh as the default shell
+RUN chsh -s $(which zsh)
 
 # Set the working directory inside the container
-WORKDIR /app
+WORKDIR /workspace
 
-# Expose ports for Rails and Storybook
-EXPOSE 3000  # Rails server
-EXPOSE 6006  # Storybook
+# Expose a default port (if needed)
+EXPOSE 3000
 
-# Start Rails server (modify CMD as needed for your project)
-CMD ["rails", "server", "-b", "0.0.0.0"]
+# Start zsh by default
+CMD ["zsh"]

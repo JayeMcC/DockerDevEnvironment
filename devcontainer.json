@@ -1,0 +1,14 @@
+{
+  "name": "Dev Container",
+  "dockerFile": "Dockerfile",
+  "workspaceFolder": "/workspace",
+  "customizations": {
+    "vscode": {
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"],
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/zsh"
+      }
+    }
+  },
+  "mounts": ["source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"]
+}
