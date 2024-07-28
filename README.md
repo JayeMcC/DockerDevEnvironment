@@ -17,6 +17,11 @@ This repository contains a `Dockerfile` and `devcontainer.json` configuration fo
 2. **Open the development environment repository in Visual Studio Code**:
    code .
 
+3. Enable filesharing of your projects directory in docker
+For WSL that means:
+- Settings -> General -> Use the WSL 2 based engine
+- Settings -> Resources -> WSL2 integration -> Enable integration with additional distros: -> Your distro is checked
+
 3. **Start the Docker container in VSCode**:
    - After opening the project in Visual Studio Code, you should see a prompt to reopen the folder in a container. If you don't see this prompt, you can manually do this by pressing `F1`, typing `Remote-Containers: Reopen in Container`, and selecting it.
    - VSCode will build the Docker image using the `Dockerfile` and create a container with the environment specified in the `devcontainer.json` file.

@@ -11,6 +11,6 @@
     }
   },
   "mounts": [
-    "source=/c/Users/jayer/repo,target=/workspace,type=bind,consistency=cached"
+    "source=/mnt/c/Users/jayer/repo,target=/workspace,type=bind,consistency=cached"
   ]
 }
