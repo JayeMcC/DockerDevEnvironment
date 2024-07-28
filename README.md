@@ -11,30 +11,27 @@ This repository contains a `Dockerfile` and `devcontainer.json` configuration fo
 ## Setup Instructions
 
 1. **Clone the development environment repository**:
-   ```sh
    git clone <dev-environment-repo-url>
    cd <dev-environment-repo-directory>
-   ```
 
 2. **Open the development environment repository in Visual Studio Code**:
-   ```sh
    code .
-   ```
 
-3. **Reopen the folder in a container**:
-   - Press `F1` to open the command palette.
-   - Type `Remote-Containers: Reopen in Container` and select it.
+3. **Start the Docker container in VSCode**:
+   - After opening the project in Visual Studio Code, you should see a prompt to reopen the folder in a container. If you don't see this prompt, you can manually do this by pressing `F1`, typing `Remote-Containers: Reopen in Container`, and selecting it.
+   - VSCode will build the Docker image using the `Dockerfile` and create a container with the environment specified in the `devcontainer.json` file.
 
-   VSCode will use the `Dockerfile` and `devcontainer.json` to build and start a Docker container with the specified environment.
+4. **Workspace Directory Mapping**:
+   - Your local workspace directory (`/c/Users/jayer/repo`) will be mapped to the `/workspace` directory inside the container, allowing you to work seamlessly between your local machine and the container.
 
-4. **Clone your actual project repository inside the container**:
-   - Open a terminal inside VSCode (which will now be inside the container).
-   - Clone your project repository in a separate directory inside the container:
-     ```sh
-     git clone <your-project-repo-url> /workspace/your-project
-     ```
+5. **Using the Environment**:
+   - The development environment is now set up with `zsh` as the default shell, along with `Oh My Zsh` and `Powerlevel10k` theme for an enhanced terminal experience.
+   - You can use the terminal in VSCode to interact with the container environment. Any changes made in the `/workspace` directory will reflect on your local machine.
 
-5. **Open your project directory in VSCode**:
-   - In VSCode, use `File > Open Folder` (or `Ctrl+K Ctrl+O`) to open `/workspace/your-project`.
+6. **Exiting and Stopping the Container**:
+   - To stop the container, you can either close Visual Studio Code or use the Docker CLI to stop and remove the container.
 
-By following these steps, you will maintain a clear separation between the dev environment repository and your actual project repository, avoiding accidental commits to the wrong repository.
+### Notes
+
+- Ensure Docker is properly configured on your machine, including necessary permissions for file sharing if using Docker Desktop on Windows.
+- For more information on using Remote Containers in VSCode, refer to the [official documentation](https://code.visualstudio.com/docs/remote/containers).
