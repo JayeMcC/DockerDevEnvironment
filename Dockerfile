@@ -3,7 +3,7 @@ FROM ubuntu:latest
 
 # Install zsh, nano, and other development tools
 RUN apt-get update && \
-    apt-get install -y curl fonts-powerline git make nano zsh && \
+    apt-get install -y curl fonts-powerline git make nano zsh wget coreutils python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
 # Disable IPv6
@@ -26,6 +26,9 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 
 # Set zsh as the default shell
 RUN chsh -s $(which zsh)
+
+# Add alias for python=python3 in .zshrc
+RUN echo 'alias python=python3' >> ~/.zshrc
 
 # Set the working directory inside the container
 WORKDIR /workspace
